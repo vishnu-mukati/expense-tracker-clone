@@ -12,8 +12,8 @@ const ExpenseList = ({ setFormData }) => {
   const isDarkTheme = useSelector(state => state.theme.isDarkTheme);
   const dataloaded = useSelector(state => state.expense.dataloaded);
   const userEmail = useSelector(state => state.auth.email);
-  const token = useSelector(state=>state.auth.token);
-
+  const token = useSelector(state => state.auth.token);
+console.log(expensedata);
 
   useEffect(() => {
     if (!dataloaded) {
@@ -25,12 +25,12 @@ const ExpenseList = ({ setFormData }) => {
       const response = await axios.get(`http://localhost:4000/expense/get-expenses/${token}`);
       console.log(response.data.expenses);
       if (response.data.expenses.length === 0) {
-        dispatch(expenseAction.addexpense([]));
+        // dispatch(expenseAction.addexpense([]));
       } else {
         dispatch(expenseAction.getexpense(response.data.expenses));
       }
       dispatch(expenseAction.dataloaded());
-    } catch (err) { 
+    } catch (err) {
       console.log(err.message);
     }
   }
@@ -64,26 +64,45 @@ const ExpenseList = ({ setFormData }) => {
     data.push(row);
   }
 
-return (
-  <>
-    <div>
-      <CSVLink data={data}>
-        <button className={classes.downloadBtn}>Download Expenses</button>
-      </CSVLink>
-    </div>
-    <ul className={`${classes.expenses} ${isDarkTheme ? classes.darkTheme : ""}`}>
-      {expensedata.map((item, index) => (
-        <li key={index}>
-          <p>Amount: {item.amount}</p>
-          <p>Title: {item.title}</p>
-          <p>Description: {item.description}</p>
-          <button onClick={() => deleteExpenseHandler(item.id)}>Delete</button>
-          <button onClick={() => editExpenseHandler(item)}>Edit</button>
-        </li>
-      ))}
-    </ul>
-  </>
-);
+  return (
+    <>
+      <div>
+        <CSVLink data={data}>
+          <button className={classes.downloadBtn}>Download Expenses</button>
+        </CSVLink>
+      </div>
+      <ul className={`${classes.expenses} ${isDarkTheme ? classes.darkTheme : ""}`}>
+        {/* {expensedata.length>0 ? (
+            expensedata.map((item, index) => (
+              <li key={index}>
+                <p>Amount: {item.amount}</p>
+                <p>Title: {item.title}</p>
+                <p>Description: {item.description}</p>
+                <button onClick={() => deleteExpenseHandler(item.id)}>Delete</button>
+                <button onClick={() => editExpenseHandler(item)}>Edit</button>
+              </li>
+            ))
+        ) : (
+          <span>No Expense Available</span>
+        )} */}
+
+        {expensedata.length > 0 ? (
+          expensedata.map((item, index) => (
+            <li key={index}>
+              <p>Amount: {item.amount}</p>
+              <p>Title: {item.title}</p>
+              <p>Description: {item.description}</p>
+              <button onClick={() => deleteExpenseHandler(item.id)}>Delete</button>
+              <button onClick={() => editExpenseHandler(item)}>Edit</button>
+            </li>
+          ))
+        ) : (
+          <span>No Expense Available</span>
+        )}
+
+      </ul>
+    </>
+  );
 
 }
 
