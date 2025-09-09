@@ -84,7 +84,9 @@ const ExpenseForm = ({ showForm, setShowForm, enteredTitle, setEnteredTitle, ent
         
         try {
             const response = await axios.post(`http://localhost:4000/expense/add-expense`, ExpenseData)
-            const newexpense = { id: response.data.name, ...ExpenseData };
+            console.log(response);
+            const newexpense = { id: response.data.expense.id, ...ExpenseData };
+            console.log(newexpense);
             dispatch(expenseAction.addexpense(newexpense));
         } catch (err) {
             console.log(err.message);

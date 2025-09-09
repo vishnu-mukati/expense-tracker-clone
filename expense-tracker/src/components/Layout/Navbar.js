@@ -12,9 +12,11 @@ const Navbar = () => {
     const dispatch = useDispatch();
     const isDarkTheme = useSelector(state => state.theme.isDarkTheme);
     const totalexpense = useSelector(state => state.expense.expensedata);
+    console.log(totalexpense);
     const totalamount = totalexpense.reduce((totalAmount, expense) => {
         return totalAmount + parseInt(expense.amount)
     }, 0)
+    console.log(totalAmount);
 
     useEffect(() => {
         setTotalAmount(totalamount);

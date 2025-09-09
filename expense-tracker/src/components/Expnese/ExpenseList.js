@@ -13,7 +13,6 @@ const ExpenseList = ({ setFormData }) => {
   const dataloaded = useSelector(state => state.expense.dataloaded);
   const userEmail = useSelector(state => state.auth.email);
   const token = useSelector(state=>state.auth.token);
-  console.log(userEmail);
 
 
   useEffect(() => {
@@ -28,18 +27,18 @@ const ExpenseList = ({ setFormData }) => {
       if (response.data.expenses.length === 0) {
         dispatch(expenseAction.addexpense([]));
       } else {
-        dispatch(expenseAction.addexpense(response.data.expenses));
+        dispatch(expenseAction.getexpense(response.data.expenses));
       }
-
       dispatch(expenseAction.dataloaded());
-    } catch (err) {
+    } catch (err) { 
       console.log(err.message);
     }
   }
 
   async function deleteExpenseHandler(id) {
     try {
-      await axios.delete(`https://expense-tracker-data-eea66-default-rtdb.firebaseio.com/${userEmail}/${id}.json`)
+      console.log(id);
+      await axios.delete(`http://localhost:4000/expense/delete-expense/${token}/${id}`)
       console.log('Expense successfuly deleted');
       dispatch(expenseAction.deleteexpense(id));
     } catch (err) {
