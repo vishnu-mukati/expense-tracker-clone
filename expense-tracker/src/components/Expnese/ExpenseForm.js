@@ -8,10 +8,11 @@ const ExpenseForm = ({ showForm, setShowForm, enteredTitle, setEnteredTitle, ent
 
     const dispatch = useDispatch();
     const isDarkTheme = useSelector(state => state.theme.isDarkTheme);
-
+  
     const editdata = useSelector(state => state.expense.editexpense);
     const userEmail = useSelector(state=>state.auth.email);
-    console.log(userEmail);
+    const token = useSelector(state=>state.auth.token);
+    console.log(token);
 
     const titleChangeHandler = (event) => {
 
@@ -77,11 +78,12 @@ const ExpenseForm = ({ showForm, setShowForm, enteredTitle, setEnteredTitle, ent
             title: enteredTitle,
             amount: enteredAmount,
             description: enteredDescription,
+            userId: token
         }
         // Expensectx.addexpense(ExpenseData);
         
         try {
-            const response = await axios.post(`https://expense-tracker-data-eea66-default-rtdb.firebaseio.com/${userEmail}.json`, ExpenseData)
+            const response = await axios.post(`http://localhost:4000/expense/add-expense`, ExpenseData)
             const newexpense = { id: response.data.name, ...ExpenseData };
             dispatch(expenseAction.addexpense(newexpense));
         } catch (err) {

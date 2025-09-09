@@ -7,6 +7,10 @@ const Expense = sequelize.define('expense',{
         primaryKey: true,
         autoIncrement: true
     },
+     title:{
+        type: DataTypes.STRING,
+        allowNull: false
+    },
     amount:{
         type: DataTypes.FLOAT,  
         allowNull: false
@@ -15,8 +19,10 @@ const Expense = sequelize.define('expense',{
         type: DataTypes.STRING,
         allowNull: false
     },
-    category:{
-        type: DataTypes.STRING,
+    userId:{
+        type: DataTypes.INTEGER,
         allowNull: false
-    }
+    }   
 });
+
+module.exports = Expense;

@@ -11,7 +11,8 @@ const ExpensesSlice = createSlice({
     initialState: initialExpeseState,
     reducers: {
         addexpense(state, action) {
-            state.expensedata = [...state.expensedata, action.payload];
+            // state.expensedata = [...state.expensedata, action.payload];
+            state.expensedata = action.payload;
         },
         deleteexpense(state, action) {
             state.expensedata = state.expensedata.filter((expense) => expense.id !== action.payload);

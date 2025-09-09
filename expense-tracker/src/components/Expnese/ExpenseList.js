@@ -12,6 +12,7 @@ const ExpenseList = ({ setFormData }) => {
   const isDarkTheme = useSelector(state => state.theme.isDarkTheme);
   const dataloaded = useSelector(state => state.expense.dataloaded);
   const userEmail = useSelector(state => state.auth.email);
+  const token = useSelector(state=>state.auth.token);
   console.log(userEmail);
 
 
@@ -22,20 +23,12 @@ const ExpenseList = ({ setFormData }) => {
   }, [dataloaded]);
   async function getdata() {
     try {
-      const response = await axios.get(`https://expense-tracker-data-eea66-default-rtdb.firebaseio.com/${userEmail}.json`);
-
-      if (response.data.null) {
-        
-        // dispatch(expenseAction.addexpense([]));
+      const response = await axios.get(`http://localhost:4000/expense/get-expenses/${token}`);
+      console.log(response.data.expenses);
+      if (response.data.expenses.length === 0) {
+        dispatch(expenseAction.addexpense([]));
       } else {
-        for (const key of Object.keys(response.data)) {
-          const expenseData = {
-            id: key,
-            ...response.data[key],
-          };
-          // Dispatch each expense as an individual object
-          dispatch(expenseAction.addexpense(expenseData));
-        }
+        dispatch(expenseAction.addexpense(response.data.expenses));
       }
 
       dispatch(expenseAction.dataloaded());

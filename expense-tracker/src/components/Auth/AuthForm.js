@@ -10,10 +10,10 @@ const AuthForm = () => {
   // const emailInputRef = useRef();
   // const passwordInputRef = useRef();
   // const confirmpasswordInputRef = useRef();
-   const [name,setName]=useState('');
-    const [email,setEmail]=useState('');
-    const [password,setPassword]=useState('');
-    const [confirmpassword,setConfirmPassword]=useState('');  
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmpassword, setConfirmPassword] = useState('');
   const history = useHistory();
 
   const dispatch = useDispatch();
@@ -36,22 +36,22 @@ const AuthForm = () => {
 
     setIsLoading(true);
 
-      let url;
-      if (isLogin) {
-        url = 'http://localhost:4000/user/login';
-        
-      } else {
-        
-        url = 'http://localhost:4000/user/signup';
-        const enteredConfirmedPassword = confirmedPassword;
-        if (enteredConfirmedPassword !== enteredPassword) {
-          alert('password does not match');
-          return;
-        }
-      };
-      
+    let url;
+    if (isLogin) {
+      url = 'http://localhost:4000/user/login';
+
+    } else {
+
+      url = 'http://localhost:4000/user/signup';
+      const enteredConfirmedPassword = confirmedPassword;
+      if (enteredConfirmedPassword !== enteredPassword) {
+        alert('password does not match');
+        return;
+      }
+    };
+
     let token;
-    
+
     try {
       const enteredName = name;
       const response = await axios.post(url, {
@@ -62,7 +62,7 @@ const AuthForm = () => {
       setIsLoading(false);
 
       // if(response && response.data){
-      dispatch(authActions.login({ email: enteredEmail, token: response.data.idToken }))
+      dispatch(authActions.login({ email: enteredEmail, token: response.data.user.id }))
 
       token = response.data.idToken;
       if (response.status === 200) {
@@ -97,16 +97,16 @@ const AuthForm = () => {
       <form onSubmit={formSubmitHandler}>
         {!isLogin && <div className={classes.control}>
           <label htmlFor="name">Your Name</label>
-          <input type="text" id="name" required  onChange={(e) => setName(e.target.value)} />
+          <input type="text" id="name" required onChange={(e) => setName(e.target.value)} />
         </div>}
         <div className={classes.control}>
           <label htmlFor="email">Your Email</label>
-          <input type="email" id="email" required  onChange={(e) => setEmail(e.target.value)} />
+          <input type="email" id="email" required onChange={(e) => setEmail(e.target.value)} />
         </div>
 
         <div className={classes.control}>
           <label htmlFor="password">Your Password</label>
-          <input type="password" id="password" required  onChange={(e) => setPassword(e.target.value)} />
+          <input type="password" id="password" required onChange={(e) => setPassword(e.target.value)} />
         </div>
 
         {!isLogin && (
