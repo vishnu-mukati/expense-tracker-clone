@@ -42,7 +42,6 @@ const CompleteProfile = () => {
             const response = await axios.post("https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyDHMqQkqmIyImQE6qLDutjgiQ4dNMSFKVw", { "idToken": token })
            
             const userdata = response.data.users[0];
-            console.log(userdata);
 
             setInitialData({ displayName: userdata.displayName, photoUrl: userdata.photoUrl });
         } catch (err) {

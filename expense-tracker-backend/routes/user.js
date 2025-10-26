@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.post('/signup', userController.UserSignUp);
 router.post('/login', userController.UserLogin);
-router.post('/add-expense', expenseController.addExpense);
+// router.post('/add-expense', expenseController.addExpense);
 
 
 module.exports = router;

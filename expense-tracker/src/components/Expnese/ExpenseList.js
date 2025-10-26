@@ -13,7 +13,6 @@ const ExpenseList = ({ setFormData }) => {
   const dataloaded = useSelector(state => state.expense.dataloaded);
   const userEmail = useSelector(state => state.auth.email);
   const token = useSelector(state => state.auth.token);
-console.log(expensedata);
 
   useEffect(() => {
     if (!dataloaded) {
@@ -22,8 +21,7 @@ console.log(expensedata);
   }, [dataloaded]);
   async function getdata() {
     try {
-      const response = await axios.get(`http://localhost:4000/expense/get-expenses/${token}`);
-      console.log(response.data.expenses);
+      const response = await axios.get(`http://localhost:4000/expense/get-expenses`,{headers : {"Authorization" : token}});
       if (response.data.expenses.length === 0) {
         // dispatch(expenseAction.addexpense([]));
       } else {
@@ -37,9 +35,7 @@ console.log(expensedata);
 
   async function deleteExpenseHandler(id) {
     try {
-      console.log(id);
-      await axios.delete(`http://localhost:4000/expense/delete-expense/${token}/${id}`)
-      console.log('Expense successfuly deleted');
+      await axios.delete(`http://localhost:4000/expense/delete-expense/${id}`, { headers: { "Authorization": token } });
       dispatch(expenseAction.deleteexpense(id));
     } catch (err) {
       console.log(err.message);
@@ -51,7 +47,6 @@ console.log(expensedata);
       dispatch(expenseAction.editexpense({ item }));
       setFormData(item);
       dispatch(expenseAction.deleteexpense(item.id));
-
     } catch (err) {
       console.log(err.message);
     }
@@ -72,20 +67,6 @@ console.log(expensedata);
         </CSVLink>
       </div>
       <ul className={`${classes.expenses} ${isDarkTheme ? classes.darkTheme : ""}`}>
-        {/* {expensedata.length>0 ? (
-            expensedata.map((item, index) => (
-              <li key={index}>
-                <p>Amount: {item.amount}</p>
-                <p>Title: {item.title}</p>
-                <p>Description: {item.description}</p>
-                <button onClick={() => deleteExpenseHandler(item.id)}>Delete</button>
-                <button onClick={() => editExpenseHandler(item)}>Edit</button>
-              </li>
-            ))
-        ) : (
-          <span>No Expense Available</span>
-        )} */}
-
         {expensedata.length > 0 ? (
           expensedata.map((item, index) => (
             <li key={index}>

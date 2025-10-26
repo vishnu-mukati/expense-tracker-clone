@@ -6,10 +6,6 @@ import { authActions } from '../../store/AuthSlice';
 import { useHistory } from "react-router-dom";
 
 const AuthForm = () => {
-  // const nameInputRef = useRef();
-  // const emailInputRef = useRef();
-  // const passwordInputRef = useRef();
-  // const confirmpasswordInputRef = useRef();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -25,6 +21,8 @@ const AuthForm = () => {
 
   const switchAuthModeHandler = () => {
     setIsLogin((prevState) => !prevState);
+      setPassword('');
+    setConfirmPassword('');
   };
 
   async function formSubmitHandler(event) {
@@ -60,36 +58,30 @@ const AuthForm = () => {
         password: enteredPassword
       })
       setIsLoading(false);
-
-      // if(response && response.data){
-      dispatch(authActions.login({ email: enteredEmail, token: response.data.user.id }))
-
       token = response.data.idToken;
-      if (response.status === 200) {
-        history.push("/");
+      if (!isLogin && response.status === 201) {
+        history.push("/auth");
+        setIsLogin(true);
       }
+      if (isLogin && response.status === 200) {
+        dispatch(authActions.login({ email: enteredEmail, token: response.data.token }));
+        history.push("/welcome");
+      }
+       setName('');
+      setEmail('');
+      setPassword('');
+      setConfirmPassword('');
     } catch (err) {
       alert(err.response.data.message || 'Something went wrong!');
-      console.log(err);
       setIsLoading(false);
     }
+     
 
-
-    // if (!isLogin) {
-    //   try {
-    //     const response = await axios.post('https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyDHMqQkqmIyImQE6qLDutjgiQ4dNMSFKVw',
-    //       {
-    //         requestType: "VERIFY_EMAIL",
-    //         idToken: token,
-    //       },
-    //     )
-    //     history.push("/");
-    //   } catch (err) {
-    //     console.log(err.message);
-    //   }
-    // }
-  };
-
+    setName("");
+    setEmail("");
+    setPassword("");
+    setConfirmPassword("");
+          };
 
   return (
     <section className={classes.auth}>
@@ -97,16 +89,16 @@ const AuthForm = () => {
       <form onSubmit={formSubmitHandler}>
         {!isLogin && <div className={classes.control}>
           <label htmlFor="name">Your Name</label>
-          <input type="text" id="name" required onChange={(e) => setName(e.target.value)} />
+          <input type="text" id="name" autoComplete='name' required value={name} onChange={(e) => setName(e.target.value)} />
         </div>}
         <div className={classes.control}>
           <label htmlFor="email">Your Email</label>
-          <input type="email" id="email" required onChange={(e) => setEmail(e.target.value)} />
+          <input type="email"  autoComplete="username" id="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
         </div>
 
         <div className={classes.control}>
           <label htmlFor="password">Your Password</label>
-          <input type="password" id="password" required onChange={(e) => setPassword(e.target.value)} />
+          <input  type='password' id="password" autoComplete={isLogin ? "current-password" : "new-password"} required value={password} onChange={(e) => setPassword(e.target.value)} />
         </div>
 
         {!isLogin && (
@@ -115,7 +107,9 @@ const AuthForm = () => {
             <input
               type="password"
               id="confirm"
+              autoComplete="new-password"
               required
+              value={confirmpassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
           </div>

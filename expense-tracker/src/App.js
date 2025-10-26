@@ -16,18 +16,18 @@ function App() {
       <BrowserRouter>
         <Navbar />
         <Switch>
-          {!isAuth && <Route path="/" exact component={AuthForm} />}
+          {!isAuth && <Route path="/auth" exact component={AuthForm} />}
           <Route path="/changepassword" component={ChangePassword} />
 
           {isAuth && (
-            <Route path="/" exact component={Welcome} />
+            <Route path="/welcome" exact component={Welcome} />
           )}
           {isAuth && (
             <Route path="/completeprofile" component={CompleteProfile} />
 
           )}
           <Route path="*">
-            <Redirect to="/" />
+            <Redirect to="/auth" />
           </Route>
         </Switch>
       </BrowserRouter>
