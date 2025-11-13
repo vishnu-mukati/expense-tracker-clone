@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import classes from "./ExpenseList.module.css";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,7 +13,10 @@ const ExpenseList = ({ setFormData }) => {
   const dataloaded = useSelector(state => state.expense.dataloaded);
   const userEmail = useSelector(state => state.auth.email);
   const token = useSelector(state => state.auth.token);
-
+  const isPremiumUser = useSelector(state => state.auth.premiumUser);
+  const [leaderboard, setLeaderboard] = useState([]);
+  const [showleaderboard, setShowleaderboard] = useState(false);
+  console.log(isPremiumUser);
   useEffect(() => {
     if (!dataloaded) {
       getdata();
@@ -21,7 +24,7 @@ const ExpenseList = ({ setFormData }) => {
   }, [dataloaded]);
   async function getdata() {
     try {
-      const response = await axios.get(`http://localhost:4000/expense/get-expenses`,{headers : {"Authorization" : token}});
+      const response = await axios.get(`http://localhost:4000/expense/get-expenses`, { headers: { "Authorization": token } });
       if (response.data.expenses.length === 0) {
         // dispatch(expenseAction.addexpense([]));
       } else {
@@ -52,6 +55,13 @@ const ExpenseList = ({ setFormData }) => {
     }
   }
 
+  const handleLeaderboard = async () => {
+    const response = await axios.get('http://localhost:4000/premium/showleaderboard', { headers: { "Authorization": token } })
+    console.log(response.data);
+    setLeaderboard(response.data.data);
+    setShowleaderboard(true);
+  }
+  
   const data = [["Title", "Amount", "Description"]]
 
   for (const expense of expensedata) {
@@ -61,11 +71,24 @@ const ExpenseList = ({ setFormData }) => {
 
   return (
     <>
-      <div>
+      <div className={classes.buttons}>
         <CSVLink data={data}>
           <button className={classes.downloadBtn}>Download Expenses</button>
         </CSVLink>
+        {isPremiumUser && <button className={classes.leaderboardBtn} onClick={() => handleLeaderboard()}>Show Leaderboard</button>}
       </div>
+      {showleaderboard && isPremiumUser && (
+        <div className={classes.leaderboard}>
+          <h2>Leaderboard</h2>
+          <ul>
+            {leaderboard.map((user) => (
+              <li key={user.rank} data-amount={`$${user.totalExpense}`}>
+                <span>Rank {user.rank}:</span> {user.name}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
       <ul className={`${classes.expenses} ${isDarkTheme ? classes.darkTheme : ""}`}>
         {expensedata.length > 0 ? (
           expensedata.map((item, index) => (

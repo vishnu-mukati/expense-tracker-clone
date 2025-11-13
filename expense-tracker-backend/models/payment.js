@@ -23,6 +23,10 @@ const Payment = sequelize.define('payment',{
         type: DataTypes.STRING,
         allowNull: false        
     },       
+    userId: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+    },
     status:{
         type: DataTypes.STRING,
         allowNull: false

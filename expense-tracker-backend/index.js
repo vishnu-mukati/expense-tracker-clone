@@ -3,6 +3,7 @@ const db = require('./utils/db-connection');
 const userRouter = require('./routes/user');
 const expenseRouter = require('./routes/expense');
 const paymentRouter = require('./routes/paymentRoutes');
+const premiumRouter = require('./routes/premiumRoutes');
 const cors = require('cors');
 const app = express();
 
@@ -12,6 +13,7 @@ app.use(cors());
 app.use('/user',userRouter);
 app.use('/expense',expenseRouter);
 app.use('/payment',paymentRouter);
+app.use('/premium',premiumRouter);
 
 db.sync().then(()=>{
     app.listen(4000,(err)=>{

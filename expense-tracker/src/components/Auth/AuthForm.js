@@ -55,16 +55,20 @@ const AuthForm = () => {
       const response = await axios.post(url, {
         name: enteredName,
         email: enteredEmail,
-        password: enteredPassword
+        password: enteredPassword,
+        premiumUser: false
       })
       setIsLoading(false);
-      token = response.data.idToken;
+  // prefer token field from our backend; fallback to idToken if present
+  token = response.data.token || response.data.idToken;
       if (!isLogin && response.status === 201) {
         history.push("/auth");
         setIsLogin(true);
       }
       if (isLogin && response.status === 200) {
-        dispatch(authActions.login({ email: enteredEmail, token: response.data.token }));
+        // remove any legacy/local stale keys
+    dispatch(authActions.login({ email: enteredEmail, token: token, premiumUser: response.data.premiumUser }));        
+    localStorage.removeItem('isPremium');
         history.push("/welcome");
       }
        setName('');

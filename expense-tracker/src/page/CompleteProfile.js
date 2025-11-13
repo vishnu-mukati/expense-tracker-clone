@@ -14,6 +14,12 @@ const CompleteProfile = () => {
  
    const dispatch = useDispatch();
     
+   useEffect(()=>{
+     setTimeout(() => {
+         dispatch(authActions.logout());
+     }, 5000);
+     return () => clearTimeout();
+   },[])
 
     const inputNameHandler = (event) => {
         setInitialData((prevState) => ({

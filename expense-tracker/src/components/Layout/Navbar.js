@@ -11,12 +11,18 @@
     const Navbar = () => {
         const [pageTitle, setPageTitle] = useState("Welcome to Expense Tracker!!!");
         const [totalAmount, setTotalAmount] = useState(0);
+        // Use Redux auth.premiumUser as single source of truth for premium status
+        const isPremium = useSelector(state => state.auth.premiumUser);
         const dispatch = useDispatch();
         const isDarkTheme = useSelector(state => state.theme.isDarkTheme);
+        const isAuth = useSelector(state => state.auth.isAuthenticated);
         const totalexpense = useSelector(state => state.expense.expensedata);
+        
         const totalamount = totalexpense.reduce((totalAmount, expense) => {
             return totalAmount + parseInt(expense.amount)
         }, 0)
+
+        // No local isPremium state; auth.premiumUser is authoritative
 
         useEffect(() => {
             setTotalAmount(totalamount);
@@ -47,8 +53,11 @@
         e.preventDefault();
 
         try {
-            // Fetch paymentSessionId from backend
-            const response = await axios.post("http://localhost:4000/payment/pay");
+            // Fetch paymentSessionId from backend (send auth token so backend can associate the order with the user)
+            const token = localStorage.getItem('token');
+            const response = await axios.post("http://localhost:4000/payment/pay", {}, {
+                headers: { Authorization: token }
+            });
             const paymentSessionId = response.data.paymentSessionId;
             let orderId = response.data.orderId;
             console.log("Payment Session ID:", paymentSessionId);
@@ -85,9 +94,18 @@
         // After checkout returns (success, error, redirect or close) ask backend for the final status
         // This ensures we handle rejected/failed payments as well as success
         console.log("Checkout result:", result);
-        try {
-            const resp = await axios.get(`http://localhost:4000/payment/payment-status/${orderId}`);
+            try {
+            const resp = await axios.get(`http://localhost:4000/payment/payment-status/${orderId}`, {
+                headers: token ? { Authorization: token } : {}
+            });
             const data = resp.data;
+            // Only mark premium if payment was successful
+            if (data.status === 'Success') {
+                // update Redux + localStorage via auth slice
+                dispatch({ type: 'authentication/setPremium', payload: true });
+            } else {
+                dispatch({ type: 'authentication/setPremium', payload: false });
+            }
             alert("Your payment status is: " + data.status);
         } catch (verifyErr) {
             console.error("Error verifying payment status:", verifyErr);
@@ -99,7 +117,7 @@
     };
 
 
-        const isAuth = useSelector(state => state.auth.isAuthenticated);
+        
         return (
             <header className={`${classes.header} ${isDarkTheme ? classes.darkTheme : ""}`}>
                 <Link to="/welcome" onClick={handleWelcomePageClick}>
@@ -122,7 +140,14 @@
                         Activate Premium
                     </Button>
                 )}
-            {isAuth && <Button variant="primary" onClick={buyPremiumHandler}>Buy Premium</Button>}
+            {/* Show Buy button only when authenticated and not premium. */}
+            {isAuth && !isPremium && (
+                <Button variant="primary" onClick={buyPremiumHandler}>Buy Premium</Button>
+            )}
+            {/* Show premium message only when authenticated AND premium. */}
+            {isAuth && isPremium && (
+                <p className={classes.profile}>You are a premium user</p>
+            )}
             </header>
         );
     }

@@ -25,6 +25,26 @@
   background-color: #555;
 }
 
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.leaderboardBtn {
+  background-color: #38015c;
+  /* display: block; */
+  align-items: right;
+  align-content: right;
+  color: white;
+  font-weight: bold;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 1rem;
+  transition: background-color 0.3s ease;
+} 
+
 .expenses li p {
   margin: 0.5rem 0;
   font-size: 1rem;
@@ -82,4 +102,83 @@
 .downloadBtn:hover {
   background-color: #c291e2;
   color: #38015c;
+}
+
+/* Leaderboard styles */
+.leaderboard {
+  width: 48rem;
+  max-width: 95%;
+  margin: 1.5rem auto;
+  background: linear-gradient(135deg, rgba(56,1,92,0.95), rgba(194,145,226,0.95));
+  padding: 1.25rem 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(56,1,92,0.25);
+  color: #fff;
+}
+
+.leaderboard h2 {
+  margin: 0 0 0.75rem 0;
+  font-size: 1.5rem;
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+
+.leaderboard ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.leaderboard li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.65rem 0.9rem;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.06);
+  transition: transform 0.15s ease, background 0.2s ease;
+}
+
+.leaderboard li:hover {
+  transform: translateY(-3px);
+  background: rgba(255,255,255,0.09);
+}
+
+.leaderboard li span:first-child {
+  display: inline-block;
+  min-width: 8rem;
+  color: #fff;
+  font-weight: 700;
+}
+
+.leaderboard li::after {
+  /* style the amount at the end of the line when markup doesn't include a wrapper */
+  content: attr(data-amount);
+  color: #ffeaa7;
+  font-weight: 700;
+}
+
+/* If you wrap the amount in a span.amount, this is the style to use instead of data-attribute */
+.amount {
+  color: #ffeaa7;
+  font-weight: 700;
+}
+
+/* Make leaderboard responsive */
+@media (max-width: 600px) {
+  .leaderboard {
+    padding: 1rem;
+  }
+  .leaderboard li {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+  .leaderboard li span:first-child {
+    min-width: auto;
+  }
 }
