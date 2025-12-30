@@ -1,9 +1,23 @@
 import React, { useState, useEffect } from "react";
-import classes from "./ExpenseList.module.css";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { expenseAction } from "../../store/ExpensesSlice";
 import { CSVLink } from "react-csv";
+import {
+  Container,
+  List,
+  ListItem,
+  ListItemText,
+  Button,
+  Box,
+  Paper,
+  Typography,
+  Stack,
+  Chip,
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import DownloadIcon from "@mui/icons-material/Download";
 
 const ExpenseList = ({ setFormData }) => {
 
@@ -70,42 +84,173 @@ const ExpenseList = ({ setFormData }) => {
   }
 
   return (
-    <>
-      <div className={classes.buttons}>
+    <Container maxWidth="md" sx={{ py: 3 }}>
+      {/* Download and Leaderboard Buttons */}
+      <Stack direction="row" spacing={2} sx={{ mb: 3, justifyContent: "flex-end" }}>
         <CSVLink data={data}>
-          <button className={classes.downloadBtn}>Download Expenses</button>
+          <Button
+            variant="contained"
+            startIcon={<DownloadIcon />}
+            sx={{
+              background: "linear-gradient(135deg, #38015c 0%, #6d28d9 100%)",
+              color: "#fff",
+              "&:hover": {
+                background: "linear-gradient(135deg, #6d28d9 0%, #5a24b0 100%)",
+              },
+            }}
+          >
+            Download Expenses
+          </Button>
         </CSVLink>
-        {isPremiumUser && <button className={classes.leaderboardBtn} onClick={() => handleLeaderboard()}>Show Leaderboard</button>}
-      </div>
-      {showleaderboard && isPremiumUser && (
-        <div className={classes.leaderboard}>
-          <h2>Leaderboard</h2>
-          <ul>
-            {leaderboard.map((user) => (
-              <li key={user.rank} data-amount={`$${user.totalExpense}`}>
-                <span>Rank {user.rank}:</span> {user.name}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-      <ul className={`${classes.expenses} ${isDarkTheme ? classes.darkTheme : ""}`}>
-        {expensedata.length > 0 ? (
-          expensedata.map((item, index) => (
-            <li key={index}>
-              <p>Amount: {item.amount}</p>
-              <p>Title: {item.title}</p>
-              <p>Description: {item.description}</p>
-              <button onClick={() => deleteExpenseHandler(item.id)}>Delete</button>
-              <button onClick={() => editExpenseHandler(item)}>Edit</button>
-            </li>
-          ))
-        ) : (
-          <span>No Expense Available</span>
+        {isPremiumUser && (
+          <Button
+            variant="contained"
+            onClick={() => handleLeaderboard()}
+            sx={{
+              background: "linear-gradient(135deg, #ec4899 0%, #db2777 100%)",
+              color: "#fff",
+              "&:hover": {
+                background: "linear-gradient(135deg, #db2777 0%, #be185d 100%)",
+              },
+            }}
+          >
+            Show Leaderboard
+          </Button>
         )}
+      </Stack>
 
-      </ul>
-    </>
+      {/* Leaderboard */}
+      {showleaderboard && isPremiumUser && (
+        <Paper
+          sx={{
+            p: 3,
+            mb: 3,
+            background: isDarkTheme
+              ? "linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)"
+              : "linear-gradient(135deg, #f9fafb 0%, #e5e7eb 100%)",
+            color: isDarkTheme ? "#fff" : "#333",
+            borderRadius: 2,
+          }}
+        >
+          <Typography variant="h5" sx={{ mb: 2, fontWeight: 700 }}>
+            🏆 Leaderboard
+          </Typography>
+          <List>
+            {leaderboard.map((user) => (
+              <ListItem
+                key={user.rank}
+                sx={{
+                  background: isDarkTheme ? "#2a2a3e" : "#fff",
+                  mb: 1,
+                  borderRadius: 1,
+                  border: isDarkTheme ? "1px solid #444" : "1px solid #e0e0e0",
+                }}
+              >
+                <ListItemText
+                  primary={`Rank ${user.rank}: ${user.name}`}
+                  secondary={`Total Expense: $${user.totalExpense}`}
+                  secondaryTypographyProps={{
+                    sx: { color: isDarkTheme ? "#aaa" : "#666" },
+                  }}
+                  sx={{ color: isDarkTheme ? "#fff" : "#333" }}
+                />
+              </ListItem>
+            ))}
+          </List>
+        </Paper>
+      )}
+
+      {/* Expenses List */}
+      <Paper
+        sx={{
+          p: 3,
+          background: isDarkTheme
+            ? "linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)"
+            : "linear-gradient(135deg, #f9fafb 0%, #e5e7eb 100%)",
+          color: isDarkTheme ? "#fff" : "#333",
+          borderRadius: 2,
+        }}
+      >
+        {expensedata.length > 0 ? (
+          <List>
+            {expensedata.map((item, index) => (
+              <ListItem
+                key={index}
+                sx={{
+                  background: isDarkTheme ? "#2a2a3e" : "#fff",
+                  mb: 2,
+                  borderRadius: 1.5,
+                  border: isDarkTheme ? "1px solid #444" : "1px solid #e0e0e0",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  flexWrap: "wrap",
+                  gap: 2,
+                  p: 2,
+                }}
+              >
+                <ListItemText
+                  primary={`Title: ${item.title}`}
+                  secondary={
+                    <>
+                      <Typography component="span" variant="body2">
+                        Amount: ${item.amount}
+                      </Typography>
+                      <br />
+                      <Typography component="span" variant="body2">
+                        Description: {item.description}
+                      </Typography>
+                    </>
+                  }
+                  secondaryTypographyProps={{
+                    sx: { color: isDarkTheme ? "#aaa" : "#666" },
+                  }}
+                  sx={{ color: isDarkTheme ? "#fff" : "#333" }}
+                />
+                <Stack direction="row" spacing={1}>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    startIcon={<DeleteIcon />}
+                    onClick={() => deleteExpenseHandler(item.id)}
+                    size="small"
+                    sx={{
+                      background: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
+                      "&:hover": {
+                        background: "linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)",
+                      },
+                    }}
+                  >
+                    Delete
+                  </Button>
+                  <Button
+                    variant="contained"
+                    startIcon={<EditIcon />}
+                    onClick={() => editExpenseHandler(item)}
+                    size="small"
+                    sx={{
+                      background: "linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)",
+                      color: "#fff",
+                      "&:hover": {
+                        background: "linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%)",
+                      },
+                    }}
+                  >
+                    Edit
+                  </Button>
+                </Stack>
+              </ListItem>
+            ))}
+          </List>
+        ) : (
+          <Box sx={{ textAlign: "center", py: 4 }}>
+            <Typography variant="h6" sx={{ color: isDarkTheme ? "#aaa" : "#666" }}>
+              No Expense Available
+            </Typography>
+          </Box>
+        )}
+      </Paper>
+    </Container>
   );
 
 }

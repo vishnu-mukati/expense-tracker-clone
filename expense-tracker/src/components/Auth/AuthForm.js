@@ -1,9 +1,16 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { useDispatch } from "react-redux";
-import classes from './AuthForm.module.css';
 import axios from 'axios';
 import { authActions } from '../../store/AuthSlice';
 import { useHistory } from "react-router-dom";
+import {
+  Container,
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Paper,
+} from '@mui/material';
 
 const AuthForm = () => {
   const [name, setName] = useState('');
@@ -76,7 +83,8 @@ const AuthForm = () => {
       setPassword('');
       setConfirmPassword('');
     } catch (err) {
-      alert(err.response.data.message || 'Something went wrong!');
+      // alert(err.response.data.message || 'Something went wrong!');
+      console.log(err.message);
       setIsLoading(false);
     }
      
@@ -85,67 +93,164 @@ const AuthForm = () => {
     setEmail("");
     setPassword("");
     setConfirmPassword("");
-          };
+  };
 
   return (
-    <section className={classes.auth}>
-      <h1>{isLogin ? "Welcome Back 👋" : "Create Account ✨"}</h1>
-      <form onSubmit={formSubmitHandler}>
-        {!isLogin && <div className={classes.control}>
-          <label htmlFor="name">Your Name</label>
-          <input type="text" id="name" autoComplete='name' required value={name} onChange={(e) => setName(e.target.value)} />
-        </div>}
-        <div className={classes.control}>
-          <label htmlFor="email">Your Email</label>
-          <input type="email"  autoComplete="username" id="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
-        </div>
+    <Container maxWidth="sm" sx={{ py: 4 }}>
+      <Paper
+        sx={{
+          padding: 4,
+          borderRadius: 3,
+          background: "linear-gradient(135deg, #4f46e5 0%, #9f5ccc 100%)",
+          color: "white",
+          boxShadow: "0 8px 20px rgba(0, 0, 0, 0.25)",
+        }}
+      >
+        <Typography
+          variant="h4"
+          sx={{
+            mb: 3,
+            fontWeight: 700,
+            textAlign: "center",
+            letterSpacing: 1,
+          }}
+        >
+          {isLogin ? "Welcome Back 👋" : "Create Account ✨"}
+        </Typography>
 
-        <div className={classes.control}>
-          <label htmlFor="password">Your Password</label>
-          <input  type='password' id="password" autoComplete={isLogin ? "current-password" : "new-password"} required value={password} onChange={(e) => setPassword(e.target.value)} />
-        </div>
+        <Box component="form" onSubmit={formSubmitHandler} sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          {!isLogin && (
+            <TextField
+              label="Your Name"
+              type="text"
+              id="name"
+              autoComplete="name"
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              variant="outlined"
+              InputLabelProps={{ style: { color: "white" } }}
+              sx={{
+                "& .MuiInputBase-input": { color: "white" },
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": { borderColor: "rgba(255, 255, 255, 0.5)" },
+                  "&:hover fieldset": { borderColor: "white" },
+                  "&.Mui-focused fieldset": { borderColor: "white" },
+                },
+              }}
+            />
+          )}
 
-        {!isLogin && (
-          <div className={classes.control}>
-            <label htmlFor="confirm">Confirm Password</label>
-            <input
+          <TextField
+            label="Your Email"
+            type="email"
+            id="email"
+            autoComplete="username"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            variant="outlined"
+            InputLabelProps={{ style: { color: "white" } }}
+            sx={{
+              "& .MuiInputBase-input": { color: "white" },
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: "rgba(255, 255, 255, 0.5)" },
+                "&:hover fieldset": { borderColor: "white" },
+                "&.Mui-focused fieldset": { borderColor: "white" },
+              },
+            }}
+          />
+
+          <TextField
+            label="Your Password"
+            type="password"
+            id="password"
+            autoComplete={isLogin ? "current-password" : "new-password"}
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            variant="outlined"
+            InputLabelProps={{ style: { color: "white" } }}
+            sx={{
+              "& .MuiInputBase-input": { color: "white" },
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: "rgba(255, 255, 255, 0.5)" },
+                "&:hover fieldset": { borderColor: "white" },
+                "&.Mui-focused fieldset": { borderColor: "white" },
+              },
+            }}
+          />
+
+          {!isLogin && (
+            <TextField
+              label="Confirm Password"
               type="password"
               id="confirm"
               autoComplete="new-password"
               required
               value={confirmpassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
+              variant="outlined"
+              InputLabelProps={{ style: { color: "white" } }}
+              sx={{
+                "& .MuiInputBase-input": { color: "white" },
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": { borderColor: "rgba(255, 255, 255, 0.5)" },
+                  "&:hover fieldset": { borderColor: "white" },
+                  "&.Mui-focused fieldset": { borderColor: "white" },
+                },
+              }}
             />
-          </div>
-        )}
+          )}
 
-        <div className={classes.actions}>
-          <button type="submit">
-            {isLoading
-              ? "Sending request..."
-              : isLogin
-                ? "Login"
-                : "Sign Up"}
-          </button>
-        </div>
+          <Button
+            type="submit"
+            variant="contained"
+            sx={{
+              background: "linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)",
+              color: "#000",
+              fontWeight: 600,
+              py: 1.2,
+              mt: 1,
+              "&:hover": {
+                background: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+              },
+            }}
+          >
+            {isLoading ? "Sending request..." : isLogin ? "Login" : "Sign Up"}
+          </Button>
 
-        <a href="/changepassword" className={classes.forgotPassword}>
-          Forgot Password?
-        </a>
+          <Button
+            component="a"
+            href="/changepassword"
+            sx={{
+              color: "#fbbf24",
+              textTransform: "none",
+              fontSize: "0.9rem",
+              "&:hover": { color: "white" },
+            }}
+          >
+            Forgot Password?
+          </Button>
 
-        <div className={classes.actions}>
-          <button
+          <Button
             type="button"
-            className={classes.toggle}
             onClick={switchAuthModeHandler}
+            sx={{
+              color: "#fbbf24",
+              textTransform: "none",
+              fontSize: "0.95rem",
+              fontWeight: 500,
+              "&:hover": { color: "white" },
+            }}
           >
             {isLogin
               ? "Don't have an account? Sign up"
               : "Already have an account? Login"}
-          </button>
-        </div>
-      </form>
-    </section>
+          </Button>
+        </Box>
+      </Paper>
+    </Container>
   );
 
 };

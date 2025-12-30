@@ -1,8 +1,19 @@
 import React from "react";
-import classes from "./ExpenseForm.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import { expenseAction } from "../../store/ExpensesSlice";
 import axios from "axios";
+import {
+  Box,
+  Button,
+  TextField,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Stack,
+  Paper,
+  Container,
+} from "@mui/material";
 
 const ExpenseForm = ({
   showForm,
@@ -108,88 +119,198 @@ const ExpenseForm = ({
   }
 
   return (
-    <>
-      <div
-        className={`${classes["centered-container"]}  ${
-          isDarkTheme ? classes.darkTheme : ""
-        }`}
+    <Container maxWidth="md" sx={{ py: 3 }}>
+      <Paper
+        sx={{
+          padding: 3,
+          borderRadius: 2,
+          background: isDarkTheme
+            ? "linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)"
+            : "linear-gradient(135deg, #f9fafb 0%, #e5e7eb 100%)",
+          boxShadow: "0 6px 20px rgba(0, 0, 0, 0.1)",
+        }}
       >
         {showForm ? (
-          <div
-            className={`${classes["form-box"]} ${
-              isDarkTheme ? classes.darkTheme : ""
-            }`}
-          >
-            <form onSubmit={formSubmitHandler}>
-              <div
-                className={`${classes["new-expense__controls"]} ${
-                  isDarkTheme ? classes.darkTheme : ""
-                }`}
+          <Box component="form" onSubmit={formSubmitHandler} sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            <TextField
+              label="Amount"
+              type="number"
+              id="amount"
+              value={enteredAmount}
+              onChange={amountChangeHandler}
+              variant="outlined"
+              fullWidth
+              sx={{
+                "& .MuiInputBase-input": {
+                  color: isDarkTheme ? "#fff" : "#333",
+                },
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: isDarkTheme ? "#555" : "#ccc",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: isDarkTheme ? "#888" : "#999",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#9f5ccc",
+                  },
+                },
+                "& .MuiInputLabel-root": {
+                  color: isDarkTheme ? "#aaa" : "#666",
+                },
+              }}
+            />
+
+            <TextField
+              label="Description"
+              type="text"
+              id="description"
+              value={enteredDescription}
+              onChange={descriptionChangeHandler}
+              variant="outlined"
+              fullWidth
+              sx={{
+                "& .MuiInputBase-input": {
+                  color: isDarkTheme ? "#fff" : "#333",
+                },
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: isDarkTheme ? "#555" : "#ccc",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: isDarkTheme ? "#888" : "#999",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#9f5ccc",
+                  },
+                },
+                "& .MuiInputLabel-root": {
+                  color: isDarkTheme ? "#aaa" : "#666",
+                },
+              }}
+            />
+
+            <FormControl fullWidth>
+              <InputLabel sx={{ color: isDarkTheme ? "#aaa" : "#666" }}>
+                Title
+              </InputLabel>
+              <Select
+                id="title"
+                value={enteredTitle}
+                onChange={titleChangeHandler}
+                label="Title"
+                sx={{
+                  color: isDarkTheme ? "#fff" : "#333",
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: isDarkTheme ? "#555" : "#ccc",
+                  },
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: isDarkTheme ? "#888" : "#999",
+                  },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#9f5ccc",
+                  },
+                }}
               >
-                <div className={classes["new-expense__control"]}>
-                  <label htmlFor="amount">Amount</label>
-                  <input
-                    type="number"
-                    id="amount"
-                    value={enteredAmount}
-                    onChange={amountChangeHandler}
-                  />
-                </div>
+                <MenuItem value="">Select Title</MenuItem>
+                <MenuItem value="Food">Food</MenuItem>
+                <MenuItem value="Petrol">Petrol</MenuItem>
+                <MenuItem value="Salary">Salary</MenuItem>
+              </Select>
+            </FormControl>
 
-                <div className={classes["new-expense__control"]}>
-                  <label htmlFor="description">Description</label>
-                  <input
-                    type="text"
-                    id="description"
-                    value={enteredDescription}
-                    onChange={descriptionChangeHandler}
-                  />
-                </div>
-
-                <div className={classes["new-expense__control"]}>
-                  <label htmlFor="title">Title</label>
-                  <select
-                    id="title"
-                    value={enteredTitle}
-                    onChange={titleChangeHandler}
-                  >
-                    <option value="">Select Title</option>
-                    <option>Food</option>
-                    <option>Petrol</option>
-                    <option>Salary</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className={classes["new-expense__actions"]}>
-                {editdata ? (
-                  <button onClick={cancleeditdataHandler}>Cancle</button>
-                ) : (
-                  <button type="button" onClick={cancelFormHandler}>
-                    Close
-                  </button>
-                )}
-                {editdata ? (
-                  <button type="button" onClick={editdataHandler}>
-                    Edit
-                  </button>
-                ) : (
-                  <button type="submit">Add Expense</button>
-                )}
-              </div>
-            </form>
-          </div>
+            <Stack direction="row" spacing={2} sx={{ justifyContent: "flex-end" }}>
+              {editdata ? (
+                <Button
+                  variant="outlined"
+                  onClick={cancleeditdataHandler}
+                  sx={{
+                    color: isDarkTheme ? "#fff" : "#666",
+                    borderColor: isDarkTheme ? "#555" : "#ccc",
+                    "&:hover": {
+                      borderColor: "#9f5ccc",
+                      color: "#9f5ccc",
+                    },
+                  }}
+                >
+                  Cancel
+                </Button>
+              ) : (
+                <Button
+                  type="button"
+                  variant="outlined"
+                  onClick={cancelFormHandler}
+                  sx={{
+                    color: isDarkTheme ? "#fff" : "#666",
+                    borderColor: isDarkTheme ? "#555" : "#ccc",
+                    "&:hover": {
+                      borderColor: "#9f5ccc",
+                      color: "#9f5ccc",
+                    },
+                  }}
+                >
+                  Close
+                </Button>
+              )}
+              {editdata ? (
+                <Button
+                  type="button"
+                  variant="contained"
+                  onClick={editdataHandler}
+                  sx={{
+                    background: "linear-gradient(135deg, #9f5ccc 0%, #6d28d9 100%)",
+                    color: "white",
+                    "&:hover": {
+                      background: "linear-gradient(135deg, #6d28d9 0%, #5a24b0 100%)",
+                    },
+                  }}
+                >
+                  Edit
+                </Button>
+              ) : (
+                <Button
+                  type="submit"
+                  variant="contained"
+                  sx={{
+                    background: "linear-gradient(135deg, #9f5ccc 0%, #6d28d9 100%)",
+                    color: "white",
+                    "&:hover": {
+                      background: "linear-gradient(135deg, #6d28d9 0%, #5a24b0 100%)",
+                    },
+                  }}
+                >
+                  Add Expense
+                </Button>
+              )}
+            </Stack>
+          </Box>
         ) : (
-          <button
-            type="button"
-            onClick={showFormHandler}
-            className={classes["add-expense-button"]}
-          >
-            Add Expense
-          </button>
+          <Box sx={{ textAlign: "center" }}>
+            <Button
+              type="button"
+              onClick={showFormHandler}
+              variant="contained"
+              size="large"
+              sx={{
+                background: "linear-gradient(135deg, #9f5ccc 0%, #6d28d9 100%)",
+                color: "white",
+                py: 1.5,
+                px: 3,
+                fontSize: "1rem",
+                fontWeight: 600,
+                "&:hover": {
+                  background: "linear-gradient(135deg, #6d28d9 0%, #5a24b0 100%)",
+                  transform: "translateY(-2px)",
+                  boxShadow: "0 8px 20px rgba(109, 40, 217, 0.4)",
+                },
+              }}
+            >
+              Add Expense
+            </Button>
+          </Box>
         )}
-      </div>
-    </>
+      </Paper>
+    </Container>
   );
 };
 

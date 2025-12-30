@@ -1,8 +1,9 @@
 const Sequelize = require("sequelize");
 
-const sequelize = new Sequelize("expense", "root", "0101", {
+const sequelize = new Sequelize("expense", "root", "1212", {
   host: "localhost",
   dialect: "mysql",
+  logging: false,
 });
 
 async () => {
@@ -15,3 +16,4 @@ async () => {
 };
 
 module.exports = sequelize;
+  
