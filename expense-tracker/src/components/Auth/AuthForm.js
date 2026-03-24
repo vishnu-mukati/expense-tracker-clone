@@ -84,7 +84,8 @@ const AuthForm = () => {
       setConfirmPassword('');
     } catch (err) {
       // alert(err.response.data.message || 'Something went wrong!');
-      console.log(err.message);
+      console.log(err);
+      alert('Authentication failed! ' + (err.response.data.message || 'Please try again later.'));
       setIsLoading(false);
     }
      
@@ -92,7 +93,6 @@ const AuthForm = () => {
     setName("");
     setEmail("");
     setPassword("");
-    setConfirmPassword("");
   };
 
   return (

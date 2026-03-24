@@ -1,10 +1,15 @@
 const Expense = require("../models/index");
+const sequelize = require("../utils/db-connection");
 
 const addExpense = async (req, res) => {
+
+    const transaction = await sequelize.transaction();
+
     try {
         const { title, amount, description } = req.body;
 
         if (!req.user) {
+            transaction.rollback();
             return res.status(401).json({ error: "User not authenticated" });
         }
         const expense = await Expense.Expense.create({
@@ -12,9 +17,11 @@ const addExpense = async (req, res) => {
             amount,
             description,
             userId: req.user.id
-        });
+        }, { transaction });
+        await transaction.commit();
         res.status(201).json({ expense });
     } catch (err) {
+        await transaction.rollback();
         res.status(500).json({ error: "Internal Server Error" });
     }
 };
@@ -30,6 +37,7 @@ const getExpenses = async (req, res) => {
 
 const deleteExpense = async (req, res) => {
     const { id } = req.params;
+    const transaction = await sequelize.transaction();
     try {
         await Expense.Expense.destroy({ where: { id: id, userId: req.user.id } });
         res.status(200).json("Expenses Deleted successfully");
