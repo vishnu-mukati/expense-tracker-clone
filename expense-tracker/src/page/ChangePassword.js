@@ -8,7 +8,7 @@ const ChangePassword = () => {
   async function formSubmitHandler(event) {
     event.preventDefault();
     try {
-      await axios.post('https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyDHMqQkqmIyImQE6qLDutjgiQ4dNMSFKVw',
+      await axios.post('http://localhost:4000/password/forgotpassword',
         {
           requestType: "PASSWORD_RESET",
           email: emailInputRef.current.value,
@@ -47,7 +47,7 @@ const ChangePassword = () => {
 
           <Box component="form" onSubmit={formSubmitHandler} sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <TextField
-              label="Enter the email with which you have registered"
+              label="Enter Your Email"
               type="email"
               id="changepassword"
               inputRef={emailInputRef}
